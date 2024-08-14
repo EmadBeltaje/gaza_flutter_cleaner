@@ -1,0 +1,42 @@
+# Dart/Pub related files
+.dart_tool/
+.packages
+.pub/
+build/
+
+# FVM related files
+.fvm/
+.fvm/flutter_sdk
+.fvm/.settings
+
+# IntelliJ related files
+.idea/
+*.iml
+
+# VSCode related files
+.vscode/
+
+# MacOS related files
+.DS_Store
+
+# Windows related files
+Thumbs.db
+
+# Other editor specific files
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.log
+
+# Coverage report files
+coverage/
+
+# Exclude compiled files
+*.dart.js
+*.dart.js.map
+*.dart.js.deps
+
+# Dependency lockfiles
+pubspec.lock

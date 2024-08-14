@@ -1,0 +1,25 @@
+name: gaza_flutter_cleaner
+description: Clean all your Flutter build folders with one command and save your disk space
+version: 1.0.0
+repository: https://github.com/EmadBeltaje/gaza_flutter_cleaner
+homepage: https://github.com/EmadBeltaje/gaza_flutter_cleaner
+documentation: https://github.com/EmadBeltaje/gaza_flutter_cleaner#readme
+issue_tracker: https://github.com/EmadBeltaje/gaza_flutter_cleaner/issues
+topics: [cli, clean, clear, build, space, delete]
+
+environment:
+  sdk: ">=2.19.0 <4.0.0"
+
+dependencies:
+  path: ^1.8.0
+  args: ^2.5.0
+  mason_logger: ^0.2.16
+
+dev_dependencies:
+  build_runner: ^2.4.12
+  lints: ^4.0.0
+  test: ^1.24.0
+  mockito: ^5.4.4
+
+executables:
+  gaza_flutter_cleaner: gaza_flutter_cleaner
