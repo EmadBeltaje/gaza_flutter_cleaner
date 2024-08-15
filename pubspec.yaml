@@ -5,7 +5,7 @@ repository: https://github.com/EmadBeltaje/gaza_flutter_cleaner
 homepage: https://github.com/EmadBeltaje/gaza_flutter_cleaner
 documentation: https://github.com/EmadBeltaje/gaza_flutter_cleaner#readme
 issue_tracker: https://github.com/EmadBeltaje/gaza_flutter_cleaner/issues
-topics: [cli, clean, clear, build, space]
+topics: [flutter, dart, cli, clean, clear]
 
 environment:
   sdk: ">=2.19.0 <4.0.0"
