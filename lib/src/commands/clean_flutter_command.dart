@@ -59,6 +59,9 @@ class CleanFlutterCommand extends BaseCommand {
       // *) Finish progress
       progress.complete('Process done successfully, check the results below below: 🔻 ');
 
+      // *) leave empty space to differ between result and process
+      myLogger.logInfo(' ');
+
       // *) Format message to show it to user
       Map<String, dynamic> formattedMessage =
           formatProcessResultMessage(cleaningResults: results);
@@ -78,8 +81,15 @@ class CleanFlutterCommand extends BaseCommand {
         myLogger.logError('${formattedMessage['failuresMessage']}');
       }
 
+      // *) show support message
+      StringBuffer supportMessage = StringBuffer()
+        ..writeln('Don\'t forget to support us on github & pub.dev:')
+        ..writeln('https://pub.dev/packages/gaza_flutter_cleaner 👍🏻 ')
+        ..writeln('https://github.com/EmadBeltaje/gaza_flutter_cleaner ⭐️ ');
+      myLogger.logInfo(supportMessage.toString());
+
       // *) show gaza message
-      myLogger.logAlert('Pray For Gaza 🇵🇸🕊️');
+      myLogger.logAlert('Pray For Gaza 🇵🇸🕊️ ');
 
       exit(0);
     } on GazaCleanerException catch (error) {
