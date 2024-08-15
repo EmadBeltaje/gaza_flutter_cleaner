@@ -55,9 +55,9 @@ mixin ProcessMessageStarter {
   String formatedSizeMessage(double sizeInMB) {
     if (sizeInMB >= 1024) {
       double sizeInGB = sizeInMB / 1024;
-      return 'Total deleted cache files = ${sizeInGB.toStringAsFixed(2)}GB ️ ';
+      return 'Total deleted cache files = ${sizeInGB.toStringAsFixed(2)}GB';
     } else {
-      return 'Total deleted cache files = ${sizeInMB.toStringAsFixed(2)}MB  ';
+      return 'Total deleted cache files = ${sizeInMB.toStringAsFixed(2)}MB';
     }
   }
 }
