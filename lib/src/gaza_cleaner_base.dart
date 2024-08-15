@@ -8,18 +8,14 @@ import 'package:gaza_flutter_cleaner/src/utils/my_logger.dart';
 
 
 class GazaCleanerBase {
-  static final GazaCleanerBase _instance = GazaCleanerBase._internal();
-
-  factory GazaCleanerBase() => _instance;
-
-  GazaCleanerBase._internal();
-
+  /// start the cleaning process
   run(List<String> args) async {
     CommandRunner runner = CommandRunner<int>(Constants.executableName, Constants.runnerDescription);
     linkCommands(runner);
     runner.run(args);
   }
 
+  /// register commands to the runner
   linkCommands(CommandRunner runner) {
     // *) current directory (where user performed command)
     Directory directory = Directory.current;
