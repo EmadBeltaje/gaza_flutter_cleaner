@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:gaza_flutter_cleaner/src/utils/constants.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:gaza_flutter_cleaner/src/cleaners/base/cleaning_result.dart';
@@ -9,14 +8,7 @@ import 'package:gaza_flutter_cleaner/src/utils/gaza_cleaner_exception.dart';
 import 'package:mason_logger/mason_logger.dart';
 
 class CleanFlutterCommand extends BaseCommand {
-  CleanFlutterCommand({required super.cleaner, required super.myLogger}) {
-    argParser.addFlag(
-      'fvm',
-      abbr: 'f',
-      help: 'add it if you are using fvm to manage your flutter versions',
-      defaultsTo: false,
-    );
-  }
+  CleanFlutterCommand({required super.cleaner, required super.myLogger});
 
   @override
   final name = 'clean';
@@ -35,11 +27,6 @@ class CleanFlutterCommand extends BaseCommand {
     Progress progress =
         myLogger.logProgress('Cleaning all the projects please wait');
     try {
-      // *) check if user add fvm
-      if (argResults?['fvm'] == true) {
-        cleaner.cleaningCommand = Constants.fvmFlutterCleanCommand;
-      }
-
       // *) Start cleaning
       final cleaningStream = cleaner.clean();
 
