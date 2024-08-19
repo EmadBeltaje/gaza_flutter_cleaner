@@ -466,39 +466,16 @@ class MockDirectory extends _i1.Mock implements _i2.Directory {
 /// See the documentation for Mockito's code generation for more information.
 class MockCommandExecutor extends _i1.Mock implements _i5.CommandExecutor {
   @override
-  _i4.Future<int> runCleanCommand({
-    required String? command,
-    required String? directoryPath,
-  }) =>
+  _i4.Future<int> runCleaning({required String? directoryPath}) =>
       (super.noSuchMethod(
         Invocation.method(
-          #runCleanCommand,
+          #runCleaning,
           [],
-          {
-            #command: command,
-            #directoryPath: directoryPath,
-          },
+          {#directoryPath: directoryPath},
         ),
         returnValue: _i4.Future<int>.value(0),
         returnValueForMissingStub: _i4.Future<int>.value(0),
       ) as _i4.Future<int>);
-
-  @override
-  _i4.Future<bool> cleanAndroidAndIOSFolders(
-    bool? isWindows,
-    String? directoryPath,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #cleanAndroidAndIOSFolders,
-          [
-            isWindows,
-            directoryPath,
-          ],
-        ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
 }
 
 /// A class which mocks [ProjectValidator].

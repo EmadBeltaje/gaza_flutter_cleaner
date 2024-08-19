@@ -49,15 +49,13 @@ main() {
 
     // Simulate command failure
     when(
-      mockCommandExecutor.runCleanCommand(
-        command: anyNamed('command'),
+      mockCommandExecutor.runCleaning(
         directoryPath: anyNamed('directoryPath'),
       ),
     ).thenAnswer((_) async => 0);
 
     final flutterCleaner = FlutterCleaner(
       directory: directory,
-      cleaningCommand: 'flutter clean',
       filesToCheck: [],
       directoryHelper: mockDirectoryHelper,
       commandExecutor: mockCommandExecutor,
@@ -77,8 +75,7 @@ main() {
 
     // Verify that runCleanCommand was called at least once with any arguments
     verify(
-      mockCommandExecutor.runCleanCommand(
-        command: anyNamed('command'),
+      mockCommandExecutor.runCleaning(
         directoryPath: anyNamed('directoryPath'),
       ),
     ).called(1);
@@ -102,15 +99,13 @@ main() {
 
     // Simulate command failure
     when(
-      mockCommandExecutor.runCleanCommand(
-        command: anyNamed('command'),
+      mockCommandExecutor.runCleaning(
         directoryPath: anyNamed('directoryPath'),
       ),
     ).thenAnswer((_) async => -1);
 
     final flutterCleaner = FlutterCleaner(
       directory: directory,
-      cleaningCommand: 'flutter clean',
       filesToCheck: [],
       directoryHelper: mockDirectoryHelper,
       commandExecutor: mockCommandExecutor,
@@ -125,13 +120,12 @@ main() {
       fail('Expected GazaCleanerException to be thrown');
     } on GazaCleanerException catch (e) {
       expect(e, isA<GazaCleanerException>());
-      expect(e.errorType, GazaCleanerExceptionType.cleaningError);
+      expect(e.errorType, GazaCleanerExceptionType.calledInsideProjectItSelf);
     }
 
     // Verify that runCleanCommand was called at least once with any arguments
     verify(
-      mockCommandExecutor.runCleanCommand(
-        command: anyNamed('command'),
+      mockCommandExecutor.runCleaning(
         directoryPath: anyNamed('directoryPath'),
       ),
     ).called(1);
@@ -155,7 +149,6 @@ main() {
 
     final flutterCleaner = FlutterCleaner(
       directory: directory,
-      cleaningCommand: 'flutter clean',
       filesToCheck: [],
       directoryHelper: mockDirectoryHelper,
       commandExecutor: mockCommandExecutor,
@@ -196,9 +189,8 @@ main() {
 
     // Simulate successful cleaning and size calculations
     when(
-      mockCommandExecutor.runCleanCommand(
+      mockCommandExecutor.runCleaning(
         directoryPath: anyNamed('directoryPath'),
-        command: anyNamed('command'),
       ),
     ).thenAnswer((_) async => 0);
     when(
@@ -222,7 +214,6 @@ main() {
 
     final flutterCleaner = FlutterCleaner(
       directory: directory,
-      cleaningCommand: 'flutter clean',
       filesToCheck: [],
       directoryHelper: dirHelper,
       commandExecutor: mockCommandExecutor,
