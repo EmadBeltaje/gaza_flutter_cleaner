@@ -2,44 +2,26 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 
 class CommandExecutor {
-  Future<int> runCleanCommand({required String command, required String directoryPath}) async {
-    // *) convert command line to list of arguments
-    List<String> arguments = command.split(' ');
-
-    const processTimeout = Duration(seconds: 20);
-
-
-    // *) perform flutter clean
-    try{
-      bool timeout = false;
-      ProcessResult result = await Process.run(
-        arguments[0],
-        arguments.length > 1 ? arguments.sublist(1) : [],
-        workingDirectory: directoryPath,
-        runInShell: true,
-      ).timeout(processTimeout,onTimeout: () async {
-        timeout = true;
-        return ProcessResult(-1, -1, '', '');
-      });
-
-
-      await cleanAndroidAndIOSFolders(Platform.isWindows,directoryPath);
-
-      return timeout ? -2 : result.exitCode;
-    } catch(error) {
-      return -1;
-    }
-  }
-
-  /// delete the android and ios build and cache folders
-  Future<bool> cleanAndroidAndIOSFolders(bool isWindows, String directoryPath) async {
+  Future<int> runCleaning({required String directoryPath}) async {
+    // *) timeout
     Duration timeout = Duration(seconds: 20);
 
+    // *) check platform
+    bool isWindows = Platform.isWindows;
+
+    // *) folders to be deleted
     final foldersToDelete = [
+      path.join(directoryPath, '.dart_tool'),
+      path.join(directoryPath, '.pubspec.lock'),
       path.join(directoryPath, 'ios', 'Pods'),
       path.join(directoryPath, 'ios', 'Podfile.lock'),
       path.join(directoryPath, 'ios', 'build'),
+      path.join(directoryPath, 'ios', '.symlinks'),
+      path.join(directoryPath, 'ios', '.Flutter','Flutter.framework'),
+      path.join(directoryPath, 'ios', '.Flutter','Flutter.podspec'),
       path.join(directoryPath, 'android', 'app', 'build'),
+      path.join(directoryPath, 'android', '.gradle'),
+      path.join(directoryPath, 'build'),
     ];
 
     try {
@@ -52,10 +34,9 @@ class CommandExecutor {
           await File(folder).delete();
         }
       }
-      return true;
+      return 0;
     } catch (error) {
-      print('Error cleaning folders: $error');
-      return false;
+      return -1;
     }
   }
 }

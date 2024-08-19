@@ -11,7 +11,6 @@ import 'package:gaza_flutter_cleaner/src/utils/directory_helper.dart';
 
 abstract class Cleaner {
   Directory directory;
-  String cleaningCommand;
   List<String> filesToCheck;
   DirectoryHelper directoryHelper;
   CommandExecutor commandExecutor;
@@ -19,25 +18,15 @@ abstract class Cleaner {
 
   Cleaner({
     required this.directory,
-    required this.cleaningCommand,
     required this.filesToCheck,
     required this.directoryHelper,
     required this.commandExecutor,
     required this.projectValidator,
   });
 
-  factory Cleaner.instance(String param1, int param2, double param3) {
-    throw UnimplementedError('Must be implemented by child classes');
-  }
-
   GazaCleanerExceptionType? getErrorType(int exitCode){
     if(exitCode == 0) {
       return null;
-    }else if(exitCode == 127) {
-      throw GazaCleanerException(
-          errorType: GazaCleanerExceptionType.commandNotFound,
-          command: cleaningCommand,
-      );
     } else if(exitCode == -2) {
       return GazaCleanerExceptionType.commandTimeout;
     } else {
@@ -57,30 +46,24 @@ abstract class Cleaner {
 
     // Handle cleaning from within a project
     if (directories.isEmpty && isTheGivenDirectoryProject) {
-      int result = await commandExecutor.runCleanCommand(
-        command: cleaningCommand,
+      await commandExecutor.runCleaning(
         directoryPath: directory.path,
       );
       throw GazaCleanerException(
-        command: cleaningCommand,
-        errorType: result == 0
-            ? GazaCleanerExceptionType.calledInsideProjectItSelf
-            : GazaCleanerExceptionType.cleaningError,
+        errorType: GazaCleanerExceptionType.calledInsideProjectItSelf,
       );
     }
 
     // Handle no projects found
     if (directories.isEmpty && !isTheGivenDirectoryProject) {
       throw GazaCleanerException(
-        command: cleaningCommand,
         errorType: GazaCleanerExceptionType.noProjectsFound,
       );
     }
 
     // Clean a project within the directory (if applicable)
     if (directories.isNotEmpty && !isTheGivenDirectoryProject) {
-      await commandExecutor.runCleanCommand(
-        command: cleaningCommand,
+      await commandExecutor.runCleaning(
         directoryPath: directory.path,
       );
     }
@@ -98,7 +81,6 @@ abstract class Cleaner {
     // Check if no valid projects are found
     if (validProjects.isEmpty) {
       throw GazaCleanerException(
-        command: cleaningCommand,
         errorType: GazaCleanerExceptionType.noProjectsFound,
       );
     }
@@ -109,8 +91,7 @@ abstract class Cleaner {
         directory: validProject,
       );
 
-      int cleaningResult = await commandExecutor.runCleanCommand(
-        command: cleaningCommand,
+      int cleaningResult = await commandExecutor.runCleaning(
         directoryPath: validProject.path,
       );
 
