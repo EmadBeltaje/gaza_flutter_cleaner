@@ -1,17 +1,12 @@
 class GazaCleanerException implements Exception {
   final GazaCleanerExceptionType errorType;
-  final String command;
-  const GazaCleanerException({required this.errorType, required this.command});
+  const GazaCleanerException({required this.errorType});
 
   @override
   String toString(){
     switch (errorType) {
       case GazaCleanerExceptionType.commandTimeout:
-        return 'Command <$command> took so much time to finish!';
-      case GazaCleanerExceptionType.commandNotFound:
-        return 'Command <$command> not found on your machine!';
-      case GazaCleanerExceptionType.cleaningError:
-        return 'Error while cleaning make sure the command <$command> is suitable for this type of project';
+        return 'Took so much time to finish!';
       case GazaCleanerExceptionType.emptyDirectory:
         return 'The directory is empty!';
       case GazaCleanerExceptionType.noProjectsFound:
@@ -35,9 +30,7 @@ enum GazaCleanerExceptionType {
   noProjectsFound,
   // user run the action while he is inside project not a directory of projects
   calledInsideProjectItSelf,
-  // error while performing the command (cleaning)
-  cleaningError,
-  // command took too much time
+  // cleaning some project took too much time
   commandTimeout,
   // other type of error
   unknownError,
