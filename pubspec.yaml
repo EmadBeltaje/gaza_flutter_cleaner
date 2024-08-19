@@ -11,9 +11,9 @@ environment:
   sdk: ">=2.19.0 <4.0.0"
 
 dependencies:
-  path: ^1.8.0
+  path: ^1.9.0
   args: ^2.5.0
-  mason_logger: ^0.2.16
+  mason_logger: ^0.3.0
 
 dev_dependencies:
   build_runner: ^2.4.12
