@@ -15,10 +15,6 @@
   ```bash
   gaza_flutter_cleaner clean
   ```
-  Use this only if you are using flutter version manager (FVM)
-  ```bash
-  gaza_flutter_cleaner clean -- fvm
-  ```
 
 </br>
 
