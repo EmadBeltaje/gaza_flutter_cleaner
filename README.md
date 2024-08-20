@@ -5,11 +5,18 @@
 
 
 # Install 🍉
-- Install the package globally
+- Install the package globally:
 
+  For the new versiosn of flutter:
+   ```bash
+    dart pub global activate gaza_flutter_cleaner
+    ```
+  For the old versiosn of flutter (equal or older than 3.16.9):
   ```bash
-  dart pub global activate gaza_flutter_cleaner
+    dart pub global activate --source git https://github.com/EmadBeltaje/gaza_flutter_cleaner.git --git-ref support_old_flutter_versions
   ```
+</br>
+
 - Run clean command on your root folder (folder that hold your flutter projects)
 
   ```bash
@@ -27,5 +34,5 @@
 ### [Emad Beltaje](https://github.com/EmadBeltaje)
 
 # Support 🧡
-Dont forget to like the [package](https://pub.dev/packages/gaza_flutter_cleaner) 👍🏻 
+Dont forget to like the [package](https://pub.dev/packages/gaza_flutter_cleaner) 👍🏻
 and star the [repo](https://github.com/EmadBeltaje/gaza_flutter_cleaner) ⭐️
