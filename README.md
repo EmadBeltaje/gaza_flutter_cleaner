@@ -7,11 +7,11 @@
 # Install 🍉
 - Install the package globally:
 
-  For the new versiosn of flutter:
+  For the new versions of flutter:
    ```bash
     dart pub global activate gaza_flutter_cleaner
     ```
-  For the old versiosn of flutter (equal or older than 3.16.9):
+  For the old versions of flutter (equal or older than 3.16.9):
   ```bash
     dart pub global activate --source git https://github.com/EmadBeltaje/gaza_flutter_cleaner.git --git-ref support_old_flutter_versions
   ```
@@ -28,11 +28,11 @@
 ---
 
 # Watch video (How it work) 🎥
-[![Wath showcase video](https://img.youtube.com/vi/GMLD5upH-nM/0.jpg)](https://www.youtube.com/watch?v=GMLD5upH-nM)
+[![Watch showcase video](https://img.youtube.com/vi/GMLD5upH-nM/0.jpg)](https://www.youtube.com/watch?v=GMLD5upH-nM)
 
 # Author 👨🏻‍💻
 ### [Emad Beltaje](https://github.com/EmadBeltaje)
 
 # Support 🧡
-Dont forget to like the [package](https://pub.dev/packages/gaza_flutter_cleaner) 👍🏻
+Don't forget to like the [package](https://pub.dev/packages/gaza_flutter_cleaner) 👍🏻
 and star the [repo](https://github.com/EmadBeltaje/gaza_flutter_cleaner) ⭐️
