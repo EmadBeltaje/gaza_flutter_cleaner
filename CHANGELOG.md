@@ -1,3 +1,9 @@
+## [1.2.0] - 2026-09-24
+- Document the public API.
+- Raise the Dart SDK constraint and bump dependencies.
+- Fix cleanup paths for `pubspec.lock` and iOS Flutter artifacts.
+- Await the command runner so CLI execution completes.
+
 ## [1.1.1] - 2024-08-20
 - Support old flutter versions (older or equal 3.16.9)
 - Update README.md.
