@@ -1,11 +1,8 @@
 import 'dart:io';
 
+/// Outcome of cleaning a single project [directory].
 class CleaningResult {
-  final Directory directory;
-  final double sizeBeforeCleaning;
-  final double sizeAfterCleaning;
-  final bool success;
-
+  /// Creates a result for [directory].
   CleaningResult({
     required this.directory,
     required this.sizeBeforeCleaning,
@@ -13,7 +10,7 @@ class CleaningResult {
     required this.success,
   });
 
-  // factory class for failure with normal values
+  /// Builds a failed result with zero sizes for [directory].
   factory CleaningResult.failure({required Directory directory}) {
     return CleaningResult(
       directory: directory,
@@ -23,6 +20,18 @@ class CleaningResult {
     );
   }
 
-  num calculateDeletedFilesSize() => sizeBeforeCleaning - sizeAfterCleaning;
+  /// Project directory that was cleaned.
+  final Directory directory;
 
+  /// Directory size in megabytes before cleaning.
+  final double sizeBeforeCleaning;
+
+  /// Directory size in megabytes after cleaning.
+  final double sizeAfterCleaning;
+
+  /// Whether the delete pass completed without an error.
+  final bool success;
+
+  /// Size in megabytes removed from [directory].
+  num calculateDeletedFilesSize() => sizeBeforeCleaning - sizeAfterCleaning;
 }

@@ -18,7 +18,7 @@ import 'gaza_flutter_cleaner_test.mocks.dart';
   MockSpec<ProjectValidator>(onMissingStub: OnMissingStub.returnDefault),
   MockSpec<DirectoryHelper>(onMissingStub: OnMissingStub.returnDefault),
 ])
-main() {
+void main() {
   late MockDirectoryHelper mockDirectoryHelper;
   late MockProjectValidator mockProjectValidator;
   late MockCommandExecutor mockCommandExecutor;
@@ -32,104 +32,106 @@ main() {
   });
 
   test(
-      'test if user run the command from inside a project it self not from the root folder that contain all the projects, so in that case we must clean the project it self and throw exception to tell user how to use the command the right way the error type should be calledInsideProjectItSelf',
-      () async {
-    when(
-      mockProjectValidator.validateProject(
-        directory: anyNamed('directory'),
-        filesToCheck: anyNamed('filesToCheck'),
-      ),
-    ).thenAnswer((_) async => true);
+    'test if user run the command from inside a project it self not from the root folder that contain all the projects, so in that case we must clean the project it self and throw exception to tell user how to use the command the right way the error type should be calledInsideProjectItSelf',
+    () async {
+      when(
+        mockProjectValidator.validateProject(
+          directory: anyNamed('directory'),
+          filesToCheck: anyNamed('filesToCheck'),
+        ),
+      ).thenAnswer((_) async => true);
 
-    when(
-      mockDirectoryHelper.getAllSubDirectories(
-        directory: anyNamed('directory'),
-      ),
-    ).thenAnswer((_) async => ([]));
+      when(
+        mockDirectoryHelper.getAllSubDirectories(
+          directory: anyNamed('directory'),
+        ),
+      ).thenAnswer((_) async => ([]));
 
-    // Simulate command failure
-    when(
-      mockCommandExecutor.runCleaning(
-        directoryPath: anyNamed('directoryPath'),
-      ),
-    ).thenAnswer((_) async => 0);
+      // Simulate command failure
+      when(
+        mockCommandExecutor.runCleaning(
+          directoryPath: anyNamed('directoryPath'),
+        ),
+      ).thenAnswer((_) async => 0);
 
-    final flutterCleaner = FlutterCleaner(
-      directory: directory,
-      filesToCheck: [],
-      directoryHelper: mockDirectoryHelper,
-      commandExecutor: mockCommandExecutor,
-      projectValidator: mockProjectValidator,
-    );
+      final flutterCleaner = FlutterCleaner(
+        directory: directory,
+        filesToCheck: [],
+        directoryHelper: mockDirectoryHelper,
+        commandExecutor: mockCommandExecutor,
+        projectValidator: mockProjectValidator,
+      );
 
-    try {
-      final results = <CleaningResult>[];
-      await for (var result in flutterCleaner.clean()) {
-        results.add(result);
+      try {
+        final results = <CleaningResult>[];
+        await for (var result in flutterCleaner.clean()) {
+          results.add(result);
+        }
+        fail('Expected GazaCleanerException to be thrown');
+      } on GazaCleanerException catch (e) {
+        expect(e, isA<GazaCleanerException>());
+        expect(e.errorType, GazaCleanerExceptionType.calledInsideProjectItSelf);
       }
-      fail('Expected GazaCleanerException to be thrown');
-    } on GazaCleanerException catch (e) {
-      expect(e, isA<GazaCleanerException>());
-      expect(e.errorType, GazaCleanerExceptionType.calledInsideProjectItSelf);
-    }
 
-    // Verify that runCleanCommand was called at least once with any arguments
-    verify(
-      mockCommandExecutor.runCleaning(
-        directoryPath: anyNamed('directoryPath'),
-      ),
-    ).called(1);
-  });
+      // Verify that runCleanCommand was called at least once with any arguments
+      verify(
+        mockCommandExecutor.runCleaning(
+          directoryPath: anyNamed('directoryPath'),
+        ),
+      ).called(1);
+    },
+  );
 
   test(
-      'test if user run the command from inside a project it self not from the root folder than contain all the projects so in this case should clean the project it self and throw exception, but in this case we will fake that we tried to clean but got error during cleaning so it should throw GazaCleanerException with error type cleaningError',
-      () async {
-    when(
-      mockProjectValidator.validateProject(
-        directory: anyNamed('directory'),
-        filesToCheck: anyNamed('filesToCheck'),
-      ),
-    ).thenAnswer((_) async => true);
+    'test if user run the command from inside a project it self not from the root folder than contain all the projects so in this case should clean the project it self and throw exception, but in this case we will fake that we tried to clean but got error during cleaning so it should throw GazaCleanerException with error type cleaningError',
+    () async {
+      when(
+        mockProjectValidator.validateProject(
+          directory: anyNamed('directory'),
+          filesToCheck: anyNamed('filesToCheck'),
+        ),
+      ).thenAnswer((_) async => true);
 
-    when(
-      mockDirectoryHelper.getAllSubDirectories(
-        directory: anyNamed('directory'),
-      ),
-    ).thenAnswer((_) async => ([]));
+      when(
+        mockDirectoryHelper.getAllSubDirectories(
+          directory: anyNamed('directory'),
+        ),
+      ).thenAnswer((_) async => ([]));
 
-    // Simulate command failure
-    when(
-      mockCommandExecutor.runCleaning(
-        directoryPath: anyNamed('directoryPath'),
-      ),
-    ).thenAnswer((_) async => -1);
+      // Simulate command failure
+      when(
+        mockCommandExecutor.runCleaning(
+          directoryPath: anyNamed('directoryPath'),
+        ),
+      ).thenAnswer((_) async => -1);
 
-    final flutterCleaner = FlutterCleaner(
-      directory: directory,
-      filesToCheck: [],
-      directoryHelper: mockDirectoryHelper,
-      commandExecutor: mockCommandExecutor,
-      projectValidator: mockProjectValidator,
-    );
+      final flutterCleaner = FlutterCleaner(
+        directory: directory,
+        filesToCheck: [],
+        directoryHelper: mockDirectoryHelper,
+        commandExecutor: mockCommandExecutor,
+        projectValidator: mockProjectValidator,
+      );
 
-    try {
-      final results = <CleaningResult>[];
-      await for (var result in flutterCleaner.clean()) {
-        results.add(result);
+      try {
+        final results = <CleaningResult>[];
+        await for (var result in flutterCleaner.clean()) {
+          results.add(result);
+        }
+        fail('Expected GazaCleanerException to be thrown');
+      } on GazaCleanerException catch (e) {
+        expect(e, isA<GazaCleanerException>());
+        expect(e.errorType, GazaCleanerExceptionType.calledInsideProjectItSelf);
       }
-      fail('Expected GazaCleanerException to be thrown');
-    } on GazaCleanerException catch (e) {
-      expect(e, isA<GazaCleanerException>());
-      expect(e.errorType, GazaCleanerExceptionType.calledInsideProjectItSelf);
-    }
 
-    // Verify that runCleanCommand was called at least once with any arguments
-    verify(
-      mockCommandExecutor.runCleaning(
-        directoryPath: anyNamed('directoryPath'),
-      ),
-    ).called(1);
-  });
+      // Verify that runCleanCommand was called at least once with any arguments
+      verify(
+        mockCommandExecutor.runCleaning(
+          directoryPath: anyNamed('directoryPath'),
+        ),
+      ).called(1);
+    },
+  );
 
   test('test if no projects found', () async {
     when(
@@ -143,9 +145,7 @@ main() {
       mockDirectoryHelper.getAllSubDirectories(
         directory: anyNamed('directory'),
       ),
-    ).thenAnswer(
-      (_) async => ([]),
-    );
+    ).thenAnswer((_) async => ([]));
 
     final flutterCleaner = FlutterCleaner(
       directory: directory,
@@ -167,67 +167,57 @@ main() {
     );
   });
 
-  test('test successful cleaning with multiple projects using stream',
-      () async {
-    // Simulate two valid projects
-    when(
-      mockDirectoryHelper.getAllSubDirectories(
-        directory: anyNamed('directory'),
-      ),
-    ).thenAnswer(
-      (_) async => [
-        MockDirectory(),
-        MockDirectory(),
-      ],
-    );
-    when(
-      mockProjectValidator.validateProject(
-        filesToCheck: anyNamed('filesToCheck'),
-        directory: anyNamed('directory'),
-      ),
-    ).thenAnswer((_) async => true);
+  test(
+    'test successful cleaning with multiple projects using stream',
+    () async {
+      // Simulate two valid projects
+      when(
+        mockDirectoryHelper.getAllSubDirectories(
+          directory: anyNamed('directory'),
+        ),
+      ).thenAnswer((_) async => [MockDirectory(), MockDirectory()]);
+      when(
+        mockProjectValidator.validateProject(
+          filesToCheck: anyNamed('filesToCheck'),
+          directory: anyNamed('directory'),
+        ),
+      ).thenAnswer((_) async => true);
 
-    // Simulate successful cleaning and size calculations
-    when(
-      mockCommandExecutor.runCleaning(
-        directoryPath: anyNamed('directoryPath'),
-      ),
-    ).thenAnswer((_) async => 0);
-    when(
-      mockDirectoryHelper.calculateDirectorySize(
-        directory: anyNamed('directory'),
-      ),
-    ).thenAnswer((_) async => 100);
+      // Simulate successful cleaning and size calculations
+      when(
+        mockCommandExecutor.runCleaning(
+          directoryPath: anyNamed('directoryPath'),
+        ),
+      ).thenAnswer((_) async => 0);
+      when(
+        mockDirectoryHelper.calculateDirectorySize(
+          directory: anyNamed('directory'),
+        ),
+      ).thenAnswer((_) async => 100);
 
-    var dirHelper = MockDirectoryHelper();
+      var dirHelper = MockDirectoryHelper();
 
-    when(
-      dirHelper.getAllSubDirectories(
-        directory: anyNamed('directory'),
-      ),
-    ).thenAnswer(
-      (_) async => [
-        MockDirectory(),
-        MockDirectory(),
-      ],
-    );
+      when(
+        dirHelper.getAllSubDirectories(directory: anyNamed('directory')),
+      ).thenAnswer((_) async => [MockDirectory(), MockDirectory()]);
 
-    final flutterCleaner = FlutterCleaner(
-      directory: directory,
-      filesToCheck: [],
-      directoryHelper: dirHelper,
-      commandExecutor: mockCommandExecutor,
-      projectValidator: mockProjectValidator,
-    );
+      final flutterCleaner = FlutterCleaner(
+        directory: directory,
+        filesToCheck: [],
+        directoryHelper: dirHelper,
+        commandExecutor: mockCommandExecutor,
+        projectValidator: mockProjectValidator,
+      );
 
-    final results = <CleaningResult>[];
-    await for (var result in flutterCleaner.clean()) {
-      results.add(result);
-    }
+      final results = <CleaningResult>[];
+      await for (var result in flutterCleaner.clean()) {
+        results.add(result);
+      }
 
-    expect(results, hasLength(2));
-    for (var result in results) {
-      expect(result.success, true);
-    }
-  });
+      expect(results, hasLength(2));
+      for (var result in results) {
+        expect(result.success, true);
+      }
+    },
+  );
 }
