@@ -6,44 +6,36 @@ import 'package:gaza_flutter_cleaner/src/commands/clean_flutter_command.dart';
 import 'package:gaza_flutter_cleaner/src/utils/constants.dart';
 import 'package:gaza_flutter_cleaner/src/utils/my_logger.dart';
 
-
+/// Entry point that wires the CLI [CommandRunner] and registered commands.
 class GazaCleanerBase {
-  /// start the cleaning process
-  run(List<String> args) async {
-    CommandRunner runner = CommandRunner<int>(Constants.executableName, Constants.runnerDescription);
+  /// Parses [args] and runs the matching command.
+  Future<void> run(List<String> args) async {
+    final runner = CommandRunner<int>(
+      Constants.executableName,
+      Constants.runnerDescription,
+    );
     linkCommands(runner);
-    runner.run(args);
+    await runner.run(args);
   }
 
-  /// register commands to the runner
-  linkCommands(CommandRunner runner) {
-    // *) current directory (where user performed command)
-    Directory directory = Directory.current;
-
-    // *) help with logging events
-    MyLogger myLogger = MyLogger();
-
-    // *) create flutter clean sub-command
-    CleanFlutterCommand cleanFlutterCommand = createCleanFlutterCommand(directory,myLogger);
-
-    // *) start the runner..
+  /// Registers supported commands on [runner].
+  void linkCommands(CommandRunner<int> runner) {
+    final directory = Directory.current;
+    final myLogger = MyLogger();
+    final cleanFlutterCommand = createCleanFlutterCommand(directory, myLogger);
     runner.addCommand(cleanFlutterCommand);
   }
 
-
-  /// generate clean flutter command
-  CleanFlutterCommand createCleanFlutterCommand(Directory directory,MyLogger myLogger) {
-    // *) create the cleaner
-    FlutterCleaner flutterCleaner = FlutterCleaner.instance(
+  /// Builds the `clean` command for [directory] using [myLogger].
+  CleanFlutterCommand createCleanFlutterCommand(
+    Directory directory,
+    MyLogger myLogger,
+  ) {
+    final flutterCleaner = FlutterCleaner.instance(
       directory: directory,
-      cleaningCommand: Constants.flutterCleanCommand,
       filesToCheck: Constants.flutterFilesToBeChecked,
     );
 
-    // *) create the command
-    return CleanFlutterCommand(
-      myLogger: myLogger,
-      cleaner: flutterCleaner,
-    );
+    return CleanFlutterCommand(myLogger: myLogger, cleaner: flutterCleaner);
   }
 }

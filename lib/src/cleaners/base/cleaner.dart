@@ -9,13 +9,9 @@ import 'package:gaza_flutter_cleaner/src/cleaners/base/project_validator.dart';
 import 'package:gaza_flutter_cleaner/src/utils/gaza_cleaner_exception.dart';
 import 'package:gaza_flutter_cleaner/src/utils/directory_helper.dart';
 
+/// Discovers Flutter-like projects under [directory] and cleans each one.
 abstract class Cleaner {
-  Directory directory;
-  List<String> filesToCheck;
-  DirectoryHelper directoryHelper;
-  CommandExecutor commandExecutor;
-  ProjectValidator projectValidator;
-
+  /// Creates a cleaner that operates on [directory].
   Cleaner({
     required this.directory,
     required this.filesToCheck,
@@ -24,87 +20,92 @@ abstract class Cleaner {
     required this.projectValidator,
   });
 
-  GazaCleanerExceptionType? getErrorType(int exitCode){
-    if(exitCode == 0) {
+  /// Root directory the user invoked the CLI from.
+  Directory directory;
+
+  /// Relative file or folder names that mark a valid project.
+  List<String> filesToCheck;
+
+  /// Helper used to list subdirectories and measure size.
+  DirectoryHelper directoryHelper;
+
+  /// Runs the delete pass for a single project path.
+  CommandExecutor commandExecutor;
+
+  /// Decides whether a directory is a project.
+  ProjectValidator projectValidator;
+
+  /// Maps a process [exitCode] to a [GazaCleanerExceptionType], or `null` on success.
+  GazaCleanerExceptionType? getErrorType(int exitCode) {
+    if (exitCode == 0) {
       return null;
-    } else if(exitCode == -2) {
+    } else if (exitCode == -2) {
       return GazaCleanerExceptionType.commandTimeout;
     } else {
       return GazaCleanerExceptionType.unknownError;
     }
   }
 
+  /// Yields a [CleaningResult] for each valid project under [directory].
+  ///
+  /// Throws a [GazaCleanerException] when the current folder is itself a
+  /// project, or when no projects are found.
   Stream<CleaningResult> clean() async* {
-    // Check if directory itself is a project
-    bool isTheGivenDirectoryProject = await projectValidator.validateProject(
+    final isTheGivenDirectoryProject = await projectValidator.validateProject(
       directory: directory,
-      filesToCheck: filesToCheck.map((file) => File(path.join(directory.path, file))).toList(),
+      filesToCheck: filesToCheck
+          .map((file) => File(path.join(directory.path, file)))
+          .toList(),
     );
 
-    // List all subdirectories
-    List<Directory> directories = await directoryHelper.getAllSubDirectories(directory: directory);
+    final directories = await directoryHelper.getAllSubDirectories(
+      directory: directory,
+    );
 
-    // Handle cleaning from within a project
     if (directories.isEmpty && isTheGivenDirectoryProject) {
-      await commandExecutor.runCleaning(
-        directoryPath: directory.path,
-      );
-      throw GazaCleanerException(
+      await commandExecutor.runCleaning(directoryPath: directory.path);
+      throw const GazaCleanerException(
         errorType: GazaCleanerExceptionType.calledInsideProjectItSelf,
       );
     }
 
-    // Handle no projects found
     if (directories.isEmpty && !isTheGivenDirectoryProject) {
-      throw GazaCleanerException(
+      throw const GazaCleanerException(
         errorType: GazaCleanerExceptionType.noProjectsFound,
       );
     }
 
-    // Clean a project within the directory (if applicable)
     if (directories.isNotEmpty && !isTheGivenDirectoryProject) {
-      await commandExecutor.runCleaning(
-        directoryPath: directory.path,
-      );
+      await commandExecutor.runCleaning(directoryPath: directory.path);
     }
 
-    // List all valid projects
-    List<Directory> validProjects = [];
+    final validProjects = <Directory>[];
     await Future.forEach(directories, (d) async {
-      bool isValidProject = await projectValidator.validateProject(
+      final isValidProject = await projectValidator.validateProject(
         directory: d,
-        filesToCheck: filesToCheck.map((file) => File(path.join(d.path, file))).toList(),
+        filesToCheck: filesToCheck
+            .map((file) => File(path.join(d.path, file)))
+            .toList(),
       );
       if (isValidProject) validProjects.add(d);
     });
 
-    // Check if no valid projects are found
     if (validProjects.isEmpty) {
-      throw GazaCleanerException(
+      throw const GazaCleanerException(
         errorType: GazaCleanerExceptionType.noProjectsFound,
       );
     }
 
-    // Clean valid projects and emit results as a stream
-    for (var validProject in validProjects) {
-      double sizeBeforeCleaning = await directoryHelper.calculateDirectorySize(
+    for (final validProject in validProjects) {
+      final sizeBeforeCleaning = await directoryHelper.calculateDirectorySize(
         directory: validProject,
       );
 
-      int cleaningResult = await commandExecutor.runCleaning(
+      final cleaningResult = await commandExecutor.runCleaning(
         directoryPath: validProject.path,
       );
 
-      // *) -2 is timeout exception so we dont have to mark all the porcess
-      // *) as failure we can only mark this directory as failed to be cleaned
-      // if(cleaningResult != 0 && cleaningResult != -2) {
-      //   throw GazaCleanerException(
-      //     command: cleaningCommand,
-      //     errorType: getErrorType(cleaningResult)!,
-      //   );
-      // }
-
-      double sizeAfterCleaning = await directoryHelper.calculateDirectorySize(
+      final sizeAfterCleaning = await directoryHelper.calculateDirectorySize(
         directory: validProject,
       );
 
